@@ -1,12 +1,12 @@
-import SelectedProject from "./components/SelectedProject";
+import Content from "./components/Content";
 import Sidebar from "./components/sidebar";
 
 function App() {
   return (
-    <>
+    <main className="h-screen my-8 flex gap-8">
       <Sidebar></Sidebar>
-      <SelectedProject></SelectedProject>
-    </>
+      <Content></Content>
+    </main>    
   );
 }
 
