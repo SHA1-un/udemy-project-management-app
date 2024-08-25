@@ -2,16 +2,18 @@ import NewProject from "./NewProject";
 import ViewProject from "./ViewProject";
 import Sidebar from "./Sidebar";
 
-import { useState, useRef } from "react";;
+import { useState } from "react";;
 
 export default function Content() {
   const [projects, setProjects] = useState([]);
   const [isAddingNewProject, setIsAddingNewProject] = useState(false);
-  const [selectedProject, setSelectedProject] = useState(null);
+  const [selectedProjectId, setSelectedProjectId] = useState(null);
+  
+  const selectedProject = projects.find(project => project.id === selectedProjectId);
 
   function handleCreateNewProject() {
     setIsAddingNewProject(true);
-    setSelectedProject(null)
+    setSelectedProjectId(null)
   }
 
   function hideNewProjectForm() {
@@ -19,20 +21,44 @@ export default function Content() {
   }
 
   function addProject(newProject) {
-    setProjects((prevProjects) => {
-      const newProjectsList = [...prevProjects];
-      newProject.id = newProjectsList.length + 1;
-      newProjectsList.push(newProject);
+    setProjects(prevProjects => {
+      const updatedProjectsList = [...prevProjects];
+      newProject.id = updatedProjectsList.length + 1;
+      newProject.tasks = [];
+      updatedProjectsList.push(newProject);
 
-      return newProjectsList;
+      return updatedProjectsList;
+    });
+  }
+
+  function addProjectTask(project, task) {
+    setProjects(prevProjects => {
+      const updatedProjectsList = [];
+      for (const proj of prevProjects) {
+        const copiedProject = {...proj};
+        copiedProject.tasks = [...proj.tasks];
+        updatedProjectsList.push(copiedProject);
+      }
+      const updatedProject = updatedProjectsList.find(_project => _project.id === project.id);
+
+      if (!updatedProject) {
+        console.log(`Could not find project with id ${project.id}`);
+        return updatedProjectsList;
+      }
+
+      task.id = updatedProject.tasks.length + 1;
+      updatedProject.tasks.push(task);
+      console.log("updated list")
+      console.log(updatedProjectsList)
+      return updatedProjectsList;
     });
   }
 
   function handleSelectProject(project) {
     if (project.id === selectedProject?.id) {
-      setSelectedProject(null);
+      setSelectedProjectId(null);
     } else {
-      setSelectedProject(project);
+      setSelectedProjectId(project.id);
     }
   }
 
@@ -41,7 +67,7 @@ export default function Content() {
     <>
       <Sidebar onCreateNewProject={handleCreateNewProject} onProjectSelect={handleSelectProject} projects={projects} selectedProject={selectedProject} />
 
-      {(!isAddingNewProject && !selectedProject) &&
+      {(!isAddingNewProject && !selectedProjectId) &&
         <div className="mt-24 text-center w-2/3">
           <img src="src\assets\no-projects.png" className="w-16 h-16 object-contain mx-auto" />
           <h2 className="text-xl font-bold text-stone-700 my-4">No Project Selected</h2>
@@ -51,8 +77,8 @@ export default function Content() {
       }
       {isAddingNewProject && <NewProject handleAddProject={addProject} hideNewProjectForm={hideNewProjectForm} />}
 
-      {(!isAddingNewProject && !!selectedProject) &&
-        <ViewProject project={selectedProject} />
+      {(!isAddingNewProject && selectedProjectId) &&
+        <ViewProject selectedProject={selectedProject} handleAddProjectTask={addProjectTask} />
       }
     </>
 
