@@ -2,7 +2,7 @@ import Task from "./Task";
 
 import { useRef } from "react";
 
-export default function ProjectTasks({ project, handleAddProjectTask}) {
+export default function ProjectTasks({ project, handleAddProjectTask, handleRemoveProjectTask}) {
   const projectTasks = project?.tasks;
   const taskInput = useRef();
 
@@ -19,7 +19,7 @@ export default function ProjectTasks({ project, handleAddProjectTask}) {
 
       {projectTasks &&
         <ul className="p-4 mt-8 rounded-md bg-stone-100">
-          {projectTasks.map(task => <Task key={task.id} projectTask={task} />)}
+          {projectTasks.map(task => <Task key={task.id} projectTask={task} project={project} onClear={handleRemoveProjectTask}/>)}
         </ul>
       }
     </div>
