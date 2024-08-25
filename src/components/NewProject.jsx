@@ -1,6 +1,6 @@
 import { useRef } from "react";
 
-export default function NewProject({ handleAddProject, handleCancel }) {
+export default function NewProject({ handleAddProject, hideNewProjectForm }) {
   const title = useRef();
   const description = useRef();
   const dueDate = useRef();
@@ -15,6 +15,7 @@ export default function NewProject({ handleAddProject, handleCancel }) {
     }
 
     handleAddProject(project);
+    resetForm();
   }
 
   function resetForm() {
@@ -22,7 +23,7 @@ export default function NewProject({ handleAddProject, handleCancel }) {
     description.current.value = null;
     dueDate.current.value = null;
 
-    handleCancel();
+    hideNewProjectForm();
   }
 
   return (

@@ -4,14 +4,15 @@ import { useState } from "react";
 
 function App() {
   const [projects, setProjects] = useState([]);
-  const [showNewProjForm, setShowNewProjForm] = useState(false);
+  const [isAddingNewProject, setIsAddingNewProject] = useState(false);
+  const [selectedProject, setSelectedProject] = useState(null);
 
-  function showNewProjectForm() {
-    setShowNewProjForm(true);
+  function handleCreateNewProject() {
+    setIsAddingNewProject(true);
   }
 
   function hideNewProjectForm() {
-    setShowNewProjForm(false);
+    setIsAddingNewProject(false);
   }
 
   function addProject(newProject) {
@@ -25,8 +26,8 @@ function App() {
 
   return (
     <main className="h-screen my-8 flex gap-8">
-      <Sidebar handleAddProject={showNewProjectForm} projects={projects}></Sidebar>
-      <Content handleAddProject={showNewProjectForm} handleSave={addProject} handleCancel={hideNewProjectForm} isAddingNewProj={showNewProjForm} ></Content>
+      <Sidebar onCreateNewProject={handleCreateNewProject} projects={projects}></Sidebar>
+      <Content onCreateNewProject={handleCreateNewProject} addProject={addProject} hideNewProjectForm={hideNewProjectForm} isAddingNewProject={isAddingNewProject} ></Content>
     </main>    
   );
 }
